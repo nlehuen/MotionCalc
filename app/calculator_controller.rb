@@ -3,13 +3,6 @@ class CalculatorViewController < UIViewController
 		@stack = Stack.new
 	end
 
-	def frameForRow(row,andCol:col)
-		[
-			[ col * @cell_w + 0.1 * @cell_w, @display.frame.size.height + row * @cell_h + 0.1 * @cell_h ],
-			[ 0.8 * @cell_w, 0.8 * @cell_h ]
-		]
-	end
-
 	def viewDidLoad
 	    ox = view.frame.origin.x
 	    oy = view.frame.origin.y
@@ -28,6 +21,13 @@ class CalculatorViewController < UIViewController
 
     	@cell_w = wi / 4
     	@cell_h = (he - @display.frame.size.height) / 5
+
+		def frameForRow(row,andCol:col)
+			[
+				[ col * @cell_w + 0.1 * @cell_w, @display.frame.size.height + row * @cell_h + 0.1 * @cell_h ],
+				[ 0.8 * @cell_w, 0.8 * @cell_h ]
+			]
+		end
 
 	    # Number buttons
 	    for i in 0..9 do
