@@ -3,6 +3,13 @@ class CalculatorViewController < UIViewController
 		@stack = Stack.new
 	end
 
+	def frameForRow(row,andCol:col)
+		[
+			[ col * @cell_w + 0.1 * @cell_w, @display.frame.size.height + row * @cell_h + 0.1 * @cell_h ],
+			[ 0.8 * @cell_w, 0.8 * @cell_h ]
+		]
+	end
+
 	def viewDidLoad
 	    ox = view.frame.origin.x
 	    oy = view.frame.origin.y
@@ -10,28 +17,23 @@ class CalculatorViewController < UIViewController
 	    he = view.frame.size.height
 
 	    # Display
-		@state = UILabel.new
-	    @state.font = UIFont.systemFontOfSize(16)
-	    @state.text = ""
-	    @state.textAlignment = UITextAlignmentCenter
-	    @state.textColor = UIColor.whiteColor
-	    @state.backgroundColor = UIColor.redColor
-	    @state.frame = [[ox, oy], [wi, @state.font.lineHeight]]
-	    view.addSubview @state
+		@display = UILabel.new
+	    @display.font = UIFont.systemFontOfSize(16)
+	    @display.text = ""
+	    @display.textAlignment = UITextAlignmentCenter
+	    @display.textColor = UIColor.whiteColor
+	    @display.backgroundColor = UIColor.redColor
+	    @display.frame = [[ox, oy], [wi, @display.font.lineHeight]]
+	    view.addSubview @display
 
-    	cell_w = wi / 4
-    	cell_h = (he - @state.frame.size.height) / 5
-
-		def frameForRow(row, andCol:col)
-
-		end
+    	@cell_w = wi / 4
+    	@cell_h = (he - @display.frame.size.height) / 5
 
 	    # Number buttons
-	    @figures = []
 	    for i in 0..9 do
-	    	@figure = UIButton.buttonWithType UIButtonTypeRoundedRect
-	    	@figure.setTitle "#{i}", forState:UIControlStateNormal
-	    	@figure.tag = i
+	    	figure = UIButton.buttonWithType UIButtonTypeRoundedRect
+	    	figure.setTitle "#{i}", forState:UIControlStateNormal
+	    	figure.tag = i
 	    	
 			# 7 8 9 +
 			# 4 5 6 -
@@ -42,20 +44,29 @@ class CalculatorViewController < UIViewController
 	    	col = (i - 1) % 3
 	    	col = 0 if i == 0
 
-	    	@figure.frame = [
-				[ col * cell_w + 0.1 * cell_w, @state.frame.size.height + row * cell_h + 0.1 * cell_h ],
-				[ 0.8 * cell_w, 0.8 * cell_h ]
-		    ]
+	    	figure.frame = frameForRow row, andCol: col
+		    figure.addTarget(self, action:'figureTapped:', forControlEvents:UIControlEventTouchUpInside)
+	    	view.addSubview figure
+	    end
 
-		    @figure.addTarget(self, action:'figureTapped:', forControlEvents:UIControlEventTouchUpInside)
-
-	    	view.addSubview @figure
-
-	    	@figures << @figure
+	    # Operations
+	    operations = ['+', '-', '*', '/']
+	    for i in 0..3 do
+	    	operation = operations[i]
+	    	op = UIButton.buttonWithType UIButtonTypeRoundedRect
+	    	op.setTitle operation, forState:UIControlStateNormal
+	    	op.tag = i
+	    	op.frame = frameForRow i, andCol: 3
+		    op.addTarget(self, action:'operationTapped:', forControlEvents:UIControlEventTouchUpInside)
+	    	view.addSubview op
 	    end
 	end
 
 	def figureTapped(figure)
-		@state.text += "#{figure.tag}"
+		@display.text += "#{figure.tag}"
+	end
+
+	def operationTapped(operation)
+		p operation.tag
 	end
 end
