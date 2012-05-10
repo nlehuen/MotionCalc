@@ -16,9 +16,10 @@ class CalculatorViewController < UIViewController
 	def viewDidLoad
 		@stack = Stack.new
 
-		@display = []
-		for i in 1..4 do
-			@display << view.viewWithTag(i)
+		@input = view.viewWithTag 1
+		@stack_display = []
+		for i in 2..4 do
+			@stack_display << view.viewWithTag(i)
 		end
 
 		for i in 10..19 do
@@ -34,40 +35,68 @@ class CalculatorViewController < UIViewController
 		for i in 30..33 do
 			addTapAction i, 'operationTapped:'
 		end
+
+		addTapAction 34, 'dropTapped'
 	end
 
-	def updateStack
-		for i in 1..3 do
-			@display[i].text = @stack.peek(i-1).to_s
+	def peek(i)
+		value = @stack.peek(i)
+
+		if value != nil
+			if value.denominator == 1
+				value = "#{value.numerator}"
+			else
+				value = "%s = %.3f" % [value, value.to_f]
+			end
+		end
+
+		value
+	end
+
+	def updateStackDisplay
+		for i in 0..2 do
+			@stack_display[i].text = peek(i)
 		end
 	end
 
 	def figureTapped(figure)
-		@display[0].text += "#{figure.tag - 10}"
+		@input.text += "#{figure.tag - 10}"
 	end
 
 	def commaTapped
-		unless @display.text.include? '.'
-			@display[0].text += '.'
+		unless @input.text.include? '.'
+			@input.text += '.'
 		end
 	end
 
 	def enterTapped
-		@stack.push @display[0].text.to_f
-		@display[0].text = ''
-		updateStack
+		@stack.push @input.text
+		@input.text = ''
+		updateStackDisplay
 	end
 
 	def deleteTapped
-		if @display[0].text.size > 0
-			@display[0].text = @display[0].text[0...-1]
+		if @input.text.size > 0
+			@input.text = @input.text[0...-1]
 		end
 	end
 
+	def dropTapped
+		v = @stack.pop
+		if v != nil
+			if v.denominator == 1
+				@input.text = v.numerator.to_s
+			else
+				@input.text = v.to_f.to_s
+			end
+		end
+		updateStackDisplay
+	end
+
 	def operationTapped(operation)
-		if @display[0].text.size > 0
-			@stack.push @display[0].text.to_f 
-			@display[0].text = ''
+		if @input.text.size > 0
+			@stack.push @input.text
+			@input.text = ''
 		end
 		
 		@stack.add if operation.tag == 30
@@ -75,6 +104,6 @@ class CalculatorViewController < UIViewController
 		@stack.mul if operation.tag == 32
 		@stack.div if operation.tag == 33
 
-		updateStack
+		updateStackDisplay
 	end
 end

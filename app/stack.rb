@@ -3,8 +3,8 @@ class Stack
 		@stack = []
 	end
 
-	def push(number)
-		@stack << number
+	def push(str)
+		@stack << Rational(str.to_i)
 		@stack.last
 	end
 
