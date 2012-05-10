@@ -4,7 +4,7 @@ class Stack
     end
 
     def push(str)
-        @stack << Rational(str.to_i)
+        @stack << Rational(str)
         @stack.last
     end
 
