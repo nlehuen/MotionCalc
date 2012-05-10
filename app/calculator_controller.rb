@@ -108,7 +108,7 @@ class CalculatorViewController < UIViewController
         @stack.sub if operation.tag == 31
         @stack.mul if operation.tag == 32
         @stack.div if operation.tag == 33
-        @stack.square if operation.tag == 34
+        @stack.negate if operation.tag == 34
         @stack.invert if operation.tag == 35
         @stack.percent if operation.tag == 36
 

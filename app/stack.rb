@@ -71,6 +71,13 @@ class Stack
         @stack.last
     end
 
+    def negate()
+        return nil if @stack.size < 1
+        a = @stack.pop
+        @stack << (Rational(0) - a)
+        @stack.last
+    end
+
     def percent()
         return nil if @stack.size < 2
         a = @stack.pop

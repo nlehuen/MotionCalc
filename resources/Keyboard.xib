@@ -639,7 +639,7 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<int key="IBUIButtonType">1</int>
-						<string key="IBUINormalTitle">x2</string>
+						<string key="IBUINormalTitle">+/-</string>
 						<reference key="IBUIHighlightedTitleColor" ref="759210470"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
 							<int key="NSColorSpace">1</int>
