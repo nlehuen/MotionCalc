@@ -1,4 +1,4 @@
-describe "Application 'RubyMotionTest'" do
+describe "Application 'MotionCalc'" do
   before do
     @app = UIApplication.sharedApplication
   end

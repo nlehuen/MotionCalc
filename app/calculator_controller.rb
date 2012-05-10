@@ -39,23 +39,20 @@ class CalculatorViewController < UIViewController
 		addTapAction 34, 'dropTapped'
 	end
 
-	def peek(i)
-		value = @stack.peek(i)
-
-		if value != nil
-			if value.denominator == 1
-				value = "#{value.numerator}"
-			else
-				value = "%s = %.3f" % [value, value.to_f]
-			end
-		end
-
-		value
-	end
-
 	def updateStackDisplay
 		for i in 0..2 do
-			@stack_display[i].text = peek(i)
+			value = @stack.peek(i)
+			if value != nil
+				if value.denominator == 1
+					value = "#{value.numerator}"
+				else
+					value = "%s = %.3f" % [value, value.to_f]
+				end
+			else
+				value = ''
+			end
+
+			@stack_display[i].text = value
 		end
 	end
 
