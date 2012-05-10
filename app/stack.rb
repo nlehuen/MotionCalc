@@ -8,8 +8,8 @@ class Stack
 		@stack.last
 	end
 
-	def peek()
-		@stack.last
+	def peek(i=0)
+		@stack[-1-i]
 	end
 
 	def pop()

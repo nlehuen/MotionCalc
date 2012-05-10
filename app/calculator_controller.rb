@@ -15,9 +15,11 @@ class CalculatorViewController < UIViewController
 
 	def viewDidLoad
 		@stack = Stack.new
-		@clean = true
 
-		@display = view.viewWithTag 1
+		@display = []
+		for i in 1..4 do
+			@display << view.viewWithTag(i)
+		end
 
 		for i in 10..19 do
 			addTapAction i, 'figureTapped:'
@@ -32,49 +34,47 @@ class CalculatorViewController < UIViewController
 		for i in 30..33 do
 			addTapAction i, 'operationTapped:'
 		end
-
 	end
 
-	def handleClean
-		if @clean
-			@clean = false
-			@display.text = ''
+	def updateStack
+		for i in 1..3 do
+			@display[i].text = @stack.peek(i-1).to_s
 		end
 	end
 
 	def figureTapped(figure)
-		handleClean
-		@display.text += "#{figure.tag - 10}"
+		@display[0].text += "#{figure.tag - 10}"
 	end
 
 	def commaTapped
-		handleClean
 		unless @display.text.include? '.'
-			@display.text += '.'
+			@display[0].text += '.'
 		end
 	end
 
 	def enterTapped
-		@stack.push @display.text.to_f
-		@display.text = ''
+		@stack.push @display[0].text.to_f
+		@display[0].text = ''
+		updateStack
 	end
 
 	def deleteTapped
-		@clean = false
-		if @display.text.size > 0
-			@display.text = @display.text[0...-1]
+		if @display[0].text.size > 0
+			@display[0].text = @display[0].text[0...-1]
 		end
 	end
 
 	def operationTapped(operation)
-		@stack.push @display.text.to_f
+		if @display[0].text.size > 0
+			@stack.push @display[0].text.to_f 
+			@display[0].text = ''
+		end
 		
 		@stack.add if operation.tag == 30
 		@stack.sub if operation.tag == 31
 		@stack.mul if operation.tag == 32
 		@stack.div if operation.tag == 33
 
-		@display.text = @stack.peek.to_s
-		@clean = true
+		updateStack
 	end
 end
