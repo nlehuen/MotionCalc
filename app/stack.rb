@@ -28,7 +28,7 @@ class Stack
 		return nil if @stack.size < 2
 		a = @stack.pop
 		b = @stack.pop
-		@stack << (a - b)
+		@stack << (b - a)
 		@stack.last
 	end
 
@@ -44,7 +44,7 @@ class Stack
 		return nil if @stack.size < 2
 		a = @stack.pop
 		b = @stack.pop
-		@stack << (a / b)
+		@stack << (b / a)
 		@stack.last
 	end			
 end

@@ -1,72 +1,80 @@
 class CalculatorViewController < UIViewController
-	def initialize
-		@stack = Stack.new
+	def loadView
+		views = NSBundle.mainBundle.loadNibNamed "Keyboard", owner:self, options:nil
+		self.view = views[0]
+	end
+
+	def addTapAction(tag, action)
+		sv = view.viewWithTag tag
+		if !sv
+			puts "Unknown tag : #{tag}"
+		else
+			sv.addTarget self, action:action, forControlEvents:UIControlEventTouchUpInside
+		end
 	end
 
 	def viewDidLoad
-	    ox = view.frame.origin.x
-	    oy = view.frame.origin.y
-	    wi = view.frame.size.width
-	    he = view.frame.size.height
+		@stack = Stack.new
+		@clean = true
 
-	    # Display
-		@display = UILabel.new
-	    @display.font = UIFont.systemFontOfSize(16)
-	    @display.text = ""
-	    @display.textAlignment = UITextAlignmentCenter
-	    @display.textColor = UIColor.whiteColor
-	    @display.backgroundColor = UIColor.redColor
-	    @display.frame = [[ox, oy], [wi, @display.font.lineHeight]]
-	    view.addSubview @display
+		@display = view.viewWithTag 1
 
-    	@cell_w = wi / 4
-    	@cell_h = (he - @display.frame.size.height) / 5
-
-		def frameForRow(row,andCol:col)
-			[
-				[ col * @cell_w + 0.1 * @cell_w, @display.frame.size.height + row * @cell_h + 0.1 * @cell_h ],
-				[ 0.8 * @cell_w, 0.8 * @cell_h ]
-			]
+		for i in 10..19 do
+			addTapAction i, 'figureTapped:'
 		end
 
-	    # Number buttons
-	    for i in 0..9 do
-	    	figure = UIButton.buttonWithType UIButtonTypeRoundedRect
-	    	figure.setTitle "#{i}", forState:UIControlStateNormal
-	    	figure.tag = i
-	    	
-			# 7 8 9 +
-			# 4 5 6 -
-			# 1 2 3 *
-			# 0   . /
-			#    =
-	    	row = (9 - i) / 3
-	    	col = (i - 1) % 3
-	    	col = 0 if i == 0
+		addTapAction 20, 'commaTapped'
 
-	    	figure.frame = frameForRow row, andCol: col
-		    figure.addTarget(self, action:'figureTapped:', forControlEvents:UIControlEventTouchUpInside)
-	    	view.addSubview figure
-	    end
+		addTapAction 21, 'enterTapped'
 
-	    # Operations
-	    operations = ['+', '-', '*', '/']
-	    for i in 0..3 do
-	    	operation = operations[i]
-	    	op = UIButton.buttonWithType UIButtonTypeRoundedRect
-	    	op.setTitle operation, forState:UIControlStateNormal
-	    	op.tag = i
-	    	op.frame = frameForRow i, andCol: 3
-		    op.addTarget(self, action:'operationTapped:', forControlEvents:UIControlEventTouchUpInside)
-	    	view.addSubview op
-	    end
+		addTapAction 22, 'deleteTapped'
+
+		for i in 30..33 do
+			addTapAction i, 'operationTapped:'
+		end
+
+	end
+
+	def handleClean
+		if @clean
+			@clean = false
+			@display.text = ''
+		end
 	end
 
 	def figureTapped(figure)
-		@display.text += "#{figure.tag}"
+		handleClean
+		@display.text += "#{figure.tag - 10}"
+	end
+
+	def commaTapped
+		handleClean
+		unless @display.text.include? '.'
+			@display.text += '.'
+		end
+	end
+
+	def enterTapped
+		@stack.push @display.text.to_f
+		@display.text = ''
+	end
+
+	def deleteTapped
+		@clean = false
+		if @display.text.size > 0
+			@display.text = @display.text[0...-1]
+		end
 	end
 
 	def operationTapped(operation)
-		p operation.tag
+		@stack.push @display.text.to_f
+		
+		@stack.add if operation.tag == 30
+		@stack.sub if operation.tag == 31
+		@stack.mul if operation.tag == 32
+		@stack.div if operation.tag == 33
+
+		@display.text = @stack.peek.to_s
+		@clean = true
 	end
 end
