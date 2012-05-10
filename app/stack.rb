@@ -46,5 +46,36 @@ class Stack
         b = @stack.pop
         @stack << (b / a)
         @stack.last
-    end            
+    end
+
+    def swap()
+        return nil if @stack.size < 2
+        a = @stack.pop
+        b = @stack.pop
+        @stack << a
+        @stack << b
+        @stack.last
+    end
+
+    def square()
+        return nil if @stack.size < 1
+        a = @stack.pop
+        @stack << (a * a)
+        @stack.last
+    end           
+
+    def invert()
+        return nil if @stack.size < 1
+        a = @stack.pop
+        @stack << (Rational(1) / a)
+        @stack.last
+    end
+
+    def percent()
+        return nil if @stack.size < 2
+        a = @stack.pop
+        b = @stack.pop
+        @stack << (a * b / Rational(100))
+        @stack.last
+    end
 end
