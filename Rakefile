@@ -2,10 +2,10 @@ $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project'
 
 Motion::Project::App.setup do |app|
-  app.name = 'MotionCalc'
-  app.version = '0.5'
-  app.identifier = 'com.lehuen.motioncal'
-  app.device_family = [:iphone]
+    app.name = 'MotionCalc'
+    app.version = '0.5'
+    app.identifier = 'com.lehuen.motioncal'
+    app.device_family = [:iphone]
 
-  app.codesign_certificate = 'iPhone Developer: Nicolas Lehuen (T5EN53LQD4)'
+    app.codesign_certificate = 'iPhone Developer: Nicolas Lehuen (T5EN53LQD4)'
 end
